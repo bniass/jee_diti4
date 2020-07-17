@@ -2,6 +2,7 @@ package service;
 
 import model.Medecin;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import utils.HibernateUtil;
 
 import javax.ejb.Stateless;
@@ -24,9 +25,13 @@ public class MedecinDAO implements IMedecin {
 
     @Override
     public void save(Medecin m) {
+        Transaction transaction = session.getTransaction();
         try {
-            session.save(m);
+            transaction.begin();
+            session.saveOrUpdate(m);
+            transaction.commit();
         }catch(Exception e){
+            transaction.rollback();
             e.printStackTrace();
         }
     }

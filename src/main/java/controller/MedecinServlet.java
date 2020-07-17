@@ -30,30 +30,37 @@ public class MedecinServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if(action != null) {
-            Medecin medecin = new Medecin();
-            medecin.setAdresse(request.getParameter("adresse"));
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                medecin.setDatenaissance(df.parse(request.getParameter("datenais")));
+            Medecin medecin = null;
+            if(action.equals("add") || action.equals("update")) {
+                if (action.equals("add")) {
+                    medecin = new Medecin();
+                } else {
+                    int medecin_id = Integer.parseInt(request.getParameter("medecinid"));
+                    medecin = medecinEJB.findById(medecin_id);
+                }
+                medecin.setAdresse(request.getParameter("adresse"));
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    medecin.setDatenaissance(df.parse(request.getParameter("datenais")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                medecin.setEmail(request.getParameter("email"));
+                medecin.setNom(request.getParameter("nom"));
+                medecin.setPrenom(request.getParameter("prenom"));
+                medecin.setTel(request.getParameter("tel"));
             }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-            medecin.setEmail(request.getParameter("email"));
-            medecin.setNom(request.getParameter("nom"));
-            medecin.setPrenom(request.getParameter("prenom"));
-            int service_id = Integer.parseInt(request.getParameter("service"));
-            medecin.setService(serviceEJB.findById(service_id));
-            medecin.setTel(request.getParameter("tel"));
-            String[] spectialites = request.getParameterValues("specialite");
-            List<Specialite> lesSpecialites = new ArrayList<>();
-            for (String sp : spectialites) {
-                lesSpecialites.add(specialiteEJB.findById(Integer.parseInt(sp)));
-            }
-            medecin.setSpecialites(lesSpecialites);
             switch (action) {
                 case "add":
                     try {
+                        int service_id = Integer.parseInt(request.getParameter("service"));
+                        medecin.setService(serviceEJB.findById(service_id));
+                        String[] spectialites = request.getParameterValues("specialite");
+                        List<Specialite> lesSpecialites = new ArrayList<>();
+                        for (String sp : spectialites) {
+                            lesSpecialites.add(specialiteEJB.findById(Integer.parseInt(sp)));
+                        }
+                        medecin.setSpecialites(lesSpecialites);
                         medecinEJB.save(medecin);
                         response.sendRedirect("medecin?action=add");
                     }
@@ -62,7 +69,28 @@ public class MedecinServlet extends HttpServlet {
                     }
                     break;
                 case "update":
-
+                    medecinEJB.save(medecin);
+                    response.sendRedirect("medecin?action=add");
+                    break;
+                case "transfert":
+                    int medecin_id = Integer.parseInt(request.getParameter("medecinid"));
+                    medecin = medecinEJB.findById(medecin_id);
+                    int service_id = Integer.parseInt(request.getParameter("service"));
+                    medecin.setService(serviceEJB.findById(service_id));
+                    medecinEJB.save(medecin);
+                    response.sendRedirect("medecin?action=add");
+                    break;
+                case "managespecialite":
+                    medecin_id = Integer.parseInt(request.getParameter("medecinid"));
+                    medecin = medecinEJB.findById(medecin_id);
+                    String[] spectialites = request.getParameterValues("specialite");
+                    List<Specialite> lesSpecialites = new ArrayList<>();
+                    for (String sp : spectialites) {
+                        lesSpecialites.add(specialiteEJB.findById(Integer.parseInt(sp)));
+                    }
+                    medecin.setSpecialites(lesSpecialites);
+                    medecinEJB.save(medecin);
+                    response.sendRedirect("medecin?action=add");
                     break;
             }
         }

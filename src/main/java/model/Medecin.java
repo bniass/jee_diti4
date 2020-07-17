@@ -24,10 +24,10 @@ public class Medecin {
     @JoinColumn(name = "service_id")
     private Service service;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "medecin_specialite",
             joinColumns = @JoinColumn(name = "medecin_id"),
-    inverseJoinColumns = @JoinColumn(name = "specialite_id"))
+            inverseJoinColumns = @JoinColumn(name = "specialite_id"))
     private List<Specialite> specialites;
 
     public long getId() {

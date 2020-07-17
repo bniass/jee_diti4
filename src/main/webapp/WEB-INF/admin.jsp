@@ -43,9 +43,9 @@
                 }
             })
         })
-        //-------------------------------------------------
-        $('.edit').click(function () {
-            idemp = $(this).attr('data-target-id');
+
+        function get($, bouton){
+            idemp = $(bouton).attr('data-target-id');
             $.ajax({
                 url:'/rhwebapp/medecin',
                 type:"GET",
@@ -60,7 +60,7 @@
                     var options = ''
                     data.service.specialites.forEach(e => {
                         options +="<option value='"+e.id+"'>"+e.libelle+"</option>";
-                    });
+                });
                     console.log(tabSpec);
                     $('#prenom').val(data.prenom);
                     $('#nom').val(data.nom);
@@ -68,20 +68,64 @@
                     $('#adresse').val(data.adresse);
                     $('#email').val(data.email);
                     var date = "\/Date("+data.datenaissance+")\/";
+                    console.log(date);
                     var nowDate = new Date(parseInt(date.substr(6)))
                     console.log(nowDate)
                     //$.format.date(nowDate, 'yyyy-mm-dd')
                     //var result = nowDate.toString("yyyy-mm-dd")
                     $('#datenais').val($.format.date(nowDate, 'yyyy-MM-dd'));
                     $('#service').val(data.service.id);
+                    //$('#service').attr('readonly', true);
                     $('#specialite').empty();
                     $('#specialite').append(options);
                     $('#specialite').val(tabSpec);
+                    $('#medecinid').val(data.id);
                 },
                 error:function (err) {
                     console.log(err);
                 }
             })
+        }
+        //-------------------------------------------------
+        $('.edit').click(function () {
+            get($, $(this));
+            $('.masquer').hide();
+            $('#action').val('update');
+            $('#prenom').removeAttr('readonly');
+            $('#nom').removeAttr('readonly');
+            $('#tel').removeAttr('readonly');
+            $('#adresse').removeAttr('readonly');
+            $('#email').removeAttr('readonly');
+            $('#specialite').removeAttr('readonly');
+            $('#datenais').removeAttr('readonly');
+            $('#service').removeAttr('readonly');
+        })
+        //-------------------------------------------------
+        $('.transfert').click(function () {
+            get($, $(this));
+            $('.masquer').show();
+            $('#prenom').attr('readonly', true);
+            $('#action').val('transfert');
+            $('#nom').attr('readonly', true);
+            $('#tel').attr('readonly', true);
+            $('#adresse').attr('readonly', true);
+            $('#email').attr('readonly', true);
+            $('#specialite').attr('readonly', true);
+            $('#datenais').attr('readonly', true);
+        })
+        //-------------------------------------------------
+        $('.manage').click(function () {
+            get($, $(this));
+            $('.masquer').show();
+            $('#prenom').attr('readonly', true);
+            $('#action').val('managespecialite');
+            $('#nom').attr('readonly', true);
+            $('#tel').attr('readonly', true);
+            $('#adresse').attr('readonly', true);
+            $('#email').attr('readonly', true);
+            $('#service').attr('readonly', true);
+            $('#specialite').removeAttr('readonly');
+            $('#datenais').attr('readonly', true);
         })
     });
 
@@ -103,7 +147,9 @@
             <th>Email</th>
             <th>Date de Naissance</th>
             <th>Service</th>
-            <th>Editer</th>
+            <th>Update</th>
+            <th>Transferer</th>
+            <th>Manage specilaites</th>
             <th>Supprimer</th>
         </tr>
         </thead>
@@ -118,8 +164,16 @@
                 <td><fmt:formatDate value="${medecin.datenaissance}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                 <td>${medecin.service.libelle}</td>
                 <td><a data-target-id="${medecin.id}"
-                       class="btn btn-primary edit" href="#" id="edit"
-                       role="button" data-toggle="modal" data-target="#exampleModal">Editer</a></td>
+                       class="btn btn-primary edit" href="#"
+                       role="button" data-toggle="modal" data-target="#exampleModal">Update</a></td>
+                <td><a data-target-id="${medecin.id}"
+                       class="btn btn-primary transfert" href="#"
+                       role="button" data-toggle="modal" data-target="#exampleModal">Transferer</a></td>
+
+                <td><a data-target-id="${medecin.id}"
+                       class="btn btn-primary manage" href="#"
+                       role="button" data-toggle="modal" data-target="#exampleModal">specialite</a></td>
+
                 <td><a data-target-id="${medecin.id}"
                        class="btn btn-danger remove" href="#" id="remove"
                        role="button" data-toggle="modal" data-target="#exampleModal">Supprimer</a></td>
@@ -165,17 +219,16 @@
                         <label for="datenais" class="col-form-label">Date de naissance:</label>
                         <input type="date" name="datenais" class="form-control" id="datenais">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group masquer">
                         <label for="service" class="col-form-label">Service:</label>
                         <select required class="form-control" name="service" id="service">
                             <option value="">---------------</option>
                             <c:forEach items="${services}" var="service">
                                 <option value="${service.id}">${service.libelle}</option>
                             </c:forEach>
-
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group masquer">
                         <label for="specialite" class="col-form-label">Specialite:</label>
                         <select multiple class="form-control" name="specialite" id="specialite">
                             <option>---------------</option>
@@ -186,7 +239,8 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Enregister</button>
             </div>
-                <input type="hidden" name="action" value="add">
+                <input type="text" id="action" name="action" value="add">
+                <input type="text" id="medecinid" name="medecinid">
             </form>
         </div>
     </div>
