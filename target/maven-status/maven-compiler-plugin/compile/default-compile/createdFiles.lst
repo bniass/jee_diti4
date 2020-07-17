@@ -1,0 +1,15 @@
+service\MedecinDAO.class
+model\Utilisateur.class
+service\UserDAO.class
+service\ServiceDAO.class
+service\IService.class
+service\IUser.class
+model\Medecin.class
+model\Specialite.class
+controller\MedecinServlet.class
+model\Service.class
+service\ISpecialite.class
+service\IMedecin.class
+service\SpecialiteDAO.class
+utils\HibernateUtil.class
+controller\UserServlet.class

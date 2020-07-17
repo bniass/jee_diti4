@@ -18,5 +18,8 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
         <mapping class="model.Utilisateur"/>
+        <mapping class="model.Medecin"/>
+        <mapping class="model.Service"/>
+        <mapping class="model.Specialite"/>
     </session-factory>
 </hibernate-configuration>
