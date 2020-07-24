@@ -5,8 +5,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import utils.HibernateUtil;
 
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import java.util.List;
+
 @Stateless
 public class MedecinDAO implements IMedecin {
     Session session;
@@ -29,6 +31,19 @@ public class MedecinDAO implements IMedecin {
         try {
             transaction.begin();
             session.saveOrUpdate(m);
+            transaction.commit();
+        }catch(Exception e){
+            transaction.rollback();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(Medecin m) {
+        Transaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
+            session.delete(m);
             transaction.commit();
         }catch(Exception e){
             transaction.rollback();

@@ -6,6 +6,7 @@ import model.Specialite;
 import service.IMedecin;
 import service.IService;
 import service.ISpecialite;
+import service.MedecinDAO;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ public class MedecinServlet extends HttpServlet {
     private ISpecialite specialiteEJB;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        IMedecin im = new MedecinDAO();
         String action = request.getParameter("action");
         if(action != null) {
             Medecin medecin = null;
@@ -90,6 +92,12 @@ public class MedecinServlet extends HttpServlet {
                     }
                     medecin.setSpecialites(lesSpecialites);
                     medecinEJB.save(medecin);
+                    response.sendRedirect("medecin?action=add");
+                    break;
+                case "delete":
+                    medecin_id = Integer.parseInt(request.getParameter("idmedecin"));
+                    medecin = medecinEJB.findById(medecin_id);
+                    medecinEJB.delete(medecin);
                     response.sendRedirect("medecin?action=add");
                     break;
             }

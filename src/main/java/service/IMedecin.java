@@ -9,4 +9,5 @@ public interface IMedecin {
     public List<Medecin> findAll();
     public Medecin findById(long id);
     public void save(Medecin m);
+    public void delete(Medecin m);
 }

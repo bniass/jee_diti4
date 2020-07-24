@@ -127,6 +127,36 @@
             $('#specialite').removeAttr('readonly');
             $('#datenais').attr('readonly', true);
         })
+        //------------------------------------------
+        $('.nouveau').click(function () {
+            get($, $(this));
+            $('.masquer').show();
+            $('#prenom').removeAttr('readonly');
+            $('#prenom').val("");
+            $('#action').val('add');
+            $('#nom').removeAttr('readonly');
+            $('#nom').val("");
+            $('#tel').removeAttr('readonly');
+            $('#tel').val("");
+            $('#adresse').removeAttr('readonly');
+            $('#adresse').val("");
+            $('#email').removeAttr('readonly');
+            $('#email').val("");
+            $('#service').removeAttr('readonly');
+            $('#service').val("");
+            $('#specialite').removeAttr('readonly');
+            $('#specialite').empty();
+            $('#datenais').removeAttr('readonly');
+            $('#datenais').val("");
+        })
+
+        $('.remove').click(function () {
+            var id = $(this).attr("data-target-id");
+            var nom = $(this).attr("data-target-value");
+            $('#idmedecin').val(id);
+            $('#contentConfirm').empty();
+            $('#contentConfirm').append('Êtes-vous sur de vouloir supprimer ['+nom+']');
+        });
     });
 
 </script>
@@ -134,7 +164,7 @@
 <body>
 <div class="container">
     <br/>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">NOUVEAU</button>
+    <button type="button" class="btn btn-primary nouveau" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">NOUVEAU</button>
     <br/><br/>
     <h2>Liste des medecins</h2>
     <table class="table table-bordered table-sm">
@@ -174,9 +204,9 @@
                        class="btn btn-primary manage" href="#"
                        role="button" data-toggle="modal" data-target="#exampleModal">specialite</a></td>
 
-                <td><a data-target-id="${medecin.id}"
+                <td><a data-target-id="${medecin.id}" data-target-value="${medecin.prenom} ${medecin.nom}"
                        class="btn btn-danger remove" href="#" id="remove"
-                       role="button" data-toggle="modal" data-target="#exampleModal">Supprimer</a></td>
+                       role="button" data-toggle="modal" data-target="#confirmModal">Supprimer</a></td>
             </tr>
         </c:forEach>
         </tbody>
@@ -239,11 +269,36 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Enregister</button>
             </div>
-                <input type="text" id="action" name="action" value="add">
-                <input type="text" id="medecinid" name="medecinid">
+                <input type="hidden" id="action" name="action" value="add">
+                <input type="hidden" id="medecinid" name="medecinid">
             </form>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Suppression d'un medecin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form2" method="post" action="${pageContext.request.contextPath}/medecin">
+                <div class="modal-body" id="contentConfirm">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+                <input type="hidden" name="action" value="delete">
+                <input type="text" id="idmedecin" name="idmedecin">
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

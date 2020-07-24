@@ -7,6 +7,7 @@ import utils.HibernateUtil;
 
 import javax.ejb.Stateless;
 import java.util.List;
+
 @Stateless
 public class ServiceDAO implements IService {
     Session session;
